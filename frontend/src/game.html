@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="bundle.js" defer></script>
+</head>
+
+<body>
+    <div id="coverScreen">
+        <button type="submit" id="newGame">Create Game</button>
+        or
+        <input type="text" placeholder="Enter game code" id="gameCode">
+        <button type="submit" id="joinGame">Join Game</button>
+    </div>
+    <div id="gameScreen">
+        <h2>Game code: <span id="gameCodeText"></span></h2>
+        <canvas id="canvas" style="border: solid black;"></canvas>
+    </div>
+</body>
+
+</html>
