@@ -1,6 +1,6 @@
 const Server = require("socket.io").Server;
 const { customAlphabet } = require("nanoid");
-const { gameLoop, initGame } = require("./game");
+const { gameLoop, initGame, newPlayer } = require("./game");
 
 const newId = customAlphabet("23456789ABCDEFGHJKLPQSTUVXYZ", 4)
 
@@ -13,30 +13,31 @@ const io = new Server({
     },
 });
 
-io.on("connect", client => {
+io.on("connection", client => {
 
-    client.on("newGame", handleNewGame);
-    client.on("joinGame", handleJoinGame);
-
-    function handleNewGame() {
+    //Create game
+    client.on("newGame", () => {
         let roomName = newId();
 
         rooms[client.id] = roomName;
         client.emit("gameCode", roomName)
 
         state[roomName] = initGame();
-
+        Object.assign(state[roomName].players, { [client.id]: newPlayer() })
         client.join(roomName);
-        client.number = 1;
-        client.emit("init", 1)
-        console.log(rooms)
-    }
+        client.emit("init", client.id)
 
-    function handleJoinGame(roomName) {
+        startInterval(roomName);
+    });
+
+    //Join
+    client.on("joinGame", (roomName) => {
+        roomName = roomName.toUpperCase();
         const room = io.sockets.adapter.rooms.get(roomName);
-        console.log(room)
+        console.log("Someone joined: ", roomName)
 
         let numClients = 0;
+
         if (room) {
             numClients = room.size;
         }
@@ -45,52 +46,59 @@ io.on("connect", client => {
             client.emit("unknownGame");
             return;
 
-        } else if (numClients > 1) {
+        } else if (numClients > 9) {
             client.emit("tooManyPlayers");
             return;
         }
 
         rooms[client.id] = roomName;
+        Object.assign(state[roomName].players, { [client.id]: newPlayer() })
         client.join(roomName);
-        client.number = 2;
-        client.emit("init", 2);
+        client.emit("gameCode", roomName)
+        client.emit("init", client.id);
+    });
 
-        startInterval(roomName);
-    }
+    //Leave
+    client.on("disconnect", () => {
+        if (state[rooms[client.id]]) {
+            delete state[rooms[client.id]].players[client.id];
+            delete rooms[client.id];
+        }
+    });
 
+
+    //Keypress
     client.on("keydown", handleKeyPress);
     client.on("keyup", handleKeyPress);
 
     function handleKeyPress(keys) {
-        const roomName = rooms[client.id]
 
-        if (!roomName) {
-            return;
-        }
+        if (!state[rooms[client.id]]) return;
+
+        let player = state[rooms[client.id]].players[client.id];
 
         //Move forward and backwards
         if (keys.includes("w")) {
-            state[roomName].players[client.number - 1].movement.vel = 2;
-            // state.player.movement.vel = 2;
+            player.movement.vel = 2;
         } else if (keys.includes("s")) {
-            state[roomName].players[client.number - 1].movement.vel = -2;
+            player.movement.vel = -2;
         } else {
-            state[roomName].players[client.number - 1].movement.vel = 0;
+            player.movement.vel = 0;
         }
 
         //Rotate tank
         if (keys.includes("d")) {
-            state[roomName].players[client.number - 1].movement.rot = 3 * Math.PI / 180;
-            // state.player.movement.rot = 3 * Math.PI / 180;
+            player.movement.rot = 3 * Math.PI / 180;
         } else if (keys.includes("a")) {
-            state[roomName].players[client.number - 1].movement.rot = -3 * Math.PI / 180;
+            player.movement.rot = -3 * Math.PI / 180;
         } else {
-            state[roomName].players[client.number - 1].movement.rot = 0 * Math.PI / 180;
+            player.movement.rot = 0 * Math.PI / 180;
         }
 
-        //Shoot round
+        //Shoot bullet
         if (keys.includes(" ")) {
-            console.log("spacebar");
+            console.log("shoot bullet");
+        } else {
         }
     }
 })
@@ -117,4 +125,5 @@ function emitGameOver(roomId, winner) {
     io.sockets.in(roomId).emit("gameOver", JSON.stringify({ winner }))
 }
 
-io.listen(3000);
+console.log("Starting server")
+io.listen(3000)

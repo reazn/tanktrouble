@@ -1,138 +1,112 @@
 
 function initGame() {
-    const state = createGameState();
-    randomItem(state);
+    const state = {
+        players: {},
+        item: {
+            x: 30,
+            y: 250,
+        },
+        bullets: [{}]
+    }
     return state;
 }
 
-function createGameState() {
+function newPlayer() {
     return {
-        players: [{
-            pos: {
-                x: 200,
-                y: 200
-            },
-            rot: 125,
-            movement: {
-                vel: 0,
-                pos: {
-                    x: 0,
-                    y: 0,
-                },
-                rot: 0,
-            },
-            inv: {
-                default: true,
-                shotgun: false
-            }
+        pos: {
+            x: Math.floor(Math.random() * (800 - 45)),
+            y: Math.floor(Math.random() * (800 - 45)),
         },
-        {
+        rot: Math.floor(Math.random() * 360),
+        movement: {
             pos: {
-                x: 600,
-                y: 600
+                x: 0,
+                y: 0,
             },
-            rot: 25,
-            movement: {
-                vel: 0,
-                pos: {
-                    x: 0,
-                    y: 0,
-                },
-                rot: 0,
-            },
-            inv: {
-                default: true,
-                shotgun: false
-            }
-        }],
-        item: {
-            x: 30,
-            y: 250
+            vel: 0,
+            rot: 0,
         },
+        color: "#" + Math.floor(Math.random() * 16777215).toString(16),
+        inv: {
+            default: true,
+            shotgun: false
+
+
+        }
     }
 }
+
 
 function gameLoop(state) {
     if (!state) return;
 
-    //Player one
-    const playerOne = state.players[0];
 
-    playerOne.pos.y += playerOne.movement.vel * Math.sin(playerOne.rot);
-    playerOne.pos.x += playerOne.movement.vel * Math.cos(playerOne.rot);
+    // console.log(Object.values(state.players))
 
-    playerOne.rot += playerOne.movement.rot;
-
-
-    //if player goes out of bounds
-    //Temp collision
-    if (playerOne.pos.x < 0) {
-        playerOne.pos.x = 0;
-    }
-
-    if (playerOne.pos.x > 800 - 45) {
-        playerOne.pos.x = 800 - 45;
-    }
-
-    if (playerOne.pos.y < 0) {
-        playerOne.pos.y = 0;
-    }
-
-    if (playerOne.pos.y > 800 - 45) {
-        playerOne.pos.y = 800 - 45;
-    }
+    // console.log(state.players, "loop")
+    // console.log(state.players, "state.players")
+    // state.players.map(player => {
+    // console.log(player, "mapped player")
+    // console.log(player)
+    // console.log(player, "object entries player")
+    // console.log(Object.values(player)[0], "player!!!")
 
 
-    ///////////////////////////////////////////////
-    //Player two
+    //TODO make this shit work!!!!, object object 
+    // console.log(state.players, state.players.length, "game loop")
+    for (let num = 0; num < Object.keys(state.players).length; num++) {
 
-    // Temp duplicate code
+        let player = Object.values(state.players)[num]
+        // console.log(player, num)
+        // const player = state.players[num]
 
-    const playerTwo = state.players[1];
+        //Movement
+        player.pos.y += player.movement.vel * Math.sin(player.rot);
+        player.pos.x += player.movement.vel * Math.cos(player.rot);
 
+        player.rot += player.movement.rot;
 
-    playerTwo.pos.y += playerTwo.movement.vel * Math.sin(playerTwo.rot);
-    playerTwo.pos.x += playerTwo.movement.vel * Math.cos(playerTwo.rot);
+        //Edge of map collision
+        if (player.pos.x < 0) {
+            player.pos.x = 0;
+        }
 
-    playerTwo.rot += playerTwo.movement.rot;
+        if (player.pos.x > 800 - 45) {
+            player.pos.x = 800 - 45;
+        }
 
+        if (player.pos.y < 0) {
+            player.pos.y = 0;
+        }
 
-    //if player goes out of bounds
-    //Temp collision
-    if (playerTwo.pos.x < 0) {
-        playerTwo.pos.x = 0;
-    }
+        if (player.pos.y > 800 - 45) {
+            player.pos.y = 800 - 45;
+        }
 
-    if (playerTwo.pos.x > 800 - 45) {
-        playerTwo.pos.x = 800 - 45;
-    }
+        //Item pickup collision
+        if (player.pos.x + 40 >= state.item.x &&
+            player.pos.x <= state.item.x + 25 &&
+            player.pos.y + 40 >= state.item.y &&
+            player.pos.y <= state.item.y + 25) {
+            randomItem(state);
+        }
 
-    if (playerTwo.pos.y < 0) {
-        playerTwo.pos.y = 0;
-    }
+        //Bullet collisions
+        if (player.shooting) {
 
-    if (playerTwo.pos.y > 800 - 45) {
-        playerTwo.pos.y = 800 - 45;
-    }
+        }
 
-
-    // // TODO make it work
-    // console.log(state.item.x, state.item.y, playerOne.pos.x, playerOne.pos.y)
-    // if (state.item.x >= playerOne.pos.x && state.item.x >= playerOne.pos.x
-    // && state.item.y >= playerOne.pos.y && state.item.y >= playerOne.pos.y) {
-    // randomItem(state)
-    // }
-
+    };
     return false;
 }
 
 function randomItem(state) {
     item = {
-        x: Math.floor(Math.random() * 800),
-        y: Math.floor(Math.random() * 800),
+        x: Math.floor(Math.random() * (800 - 25)),
+        y: Math.floor(Math.random() * (800 - 25)),
     };
 
     state.item = item;
 }
 
-module.exports = { initGame, gameLoop };
+module.exports = { initGame, gameLoop, newPlayer };
