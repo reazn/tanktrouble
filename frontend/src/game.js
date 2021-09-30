@@ -15,28 +15,25 @@ const newGameButton = document.getElementById("newGame"); //Create game
 const gameCodeInput = document.getElementById("gameCode"); //Game Code input
 const joinGameButton = document.getElementById("joinGame"); //Join game
 const gameCodeText = document.getElementById("gameCodeText"); //Join game
-// const gameLeaveButton = document.getElementById("gameLeave"); //Leave game
 
 gameCodeText.addEventListener("click", () => {
-    navigator.clipboard.writeText(gameCodeText.innerText)
+    navigator.clipboard.writeText(gameCodeText.innerText);
 })
 
 newGameButton.addEventListener("click", newGame);
 joinGameButton.addEventListener("click", joinGame);
-// gameLeaveButton.addEventListener("click", leaveGame);
-
 
 let canvas, ctx, playerNumber;
 let gameActive = false;
 
 function newGame(event) {
-    socket.emit("newGame")
+    socket.emit("newGame");
     init()
 }
 
 function joinGame() {
     const gameCode = gameCodeInput.value;
-    socket.emit("joinGame", gameCode)
+    socket.emit("joinGame", gameCode);
     init()
 }
 
@@ -72,16 +69,16 @@ function init() {
 function draw(state) {
     //Canvas
     ctx.fillStyle = "#fff";
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     //Item
     const item = state.item;
-    ctx.fillStyle = "#8d41fe"
-    ctx.fillRect(item.x, item.y, 25, 25)
+    ctx.fillStyle = "#8d41fe";
+    ctx.fillRect(item.x, item.y, 25, 25);
 
     //Player
     for (let num = 0; num < Object.keys(state.players).length; num++) {
-        let player = Object.values(state.players)[num]
+        let player = Object.values(state.players)[num];
         drawPlayer(player, player.color);
     }
 }
@@ -96,7 +93,7 @@ function drawPlayer(playerState, color) {
     ctx.save();
     ctx.beginPath();
     ctx.translate(playerState.pos.x + tankLength / 2, playerState.pos.y + tankWidth / 2);
-    ctx.rotate(playerState.rot)
+    ctx.rotate(playerState.rot);
     ctx.fillRect(-tankLength / 2, -tankWidth / 2, tankLength, tankWidth);
     ctx.rect(-tankLength * -0.1, -tankWidth / 2 + gunWidth, gunLength, gunWidth);
     ctx.stroke()
@@ -118,7 +115,7 @@ function handleInit(number) {
 
 function handleGameState(gameState) {
     if (!gameActive) return;
-    gameState = JSON.parse(gameState)
+    gameState = JSON.parse(gameState);
     requestAnimationFrame(() => draw(gameState));
 }
 
@@ -127,9 +124,9 @@ function handleGameOver(data) {
     data = JSON.parse(data);
 
     if (data.winner === playerNumber) {
-        alert("you won!")
+        alert("you won!");
     } else {
-        alert("you lost lmao")
+        alert("you lost lmao");
     }
     gameActive = false;
 }
@@ -140,12 +137,12 @@ function handleGameCode(gameCode) {
 
 function handleUnknownGame() {
     reset();
-    alert("Error, unknown game")
+    alert("Error, unknown game");
 }
 
 function handleTooManyPlayers() {
-    reset();
-    alert("Game already in progress")
+    reset();;
+    alert("Game already in progress");
 }
 
 function reset() {

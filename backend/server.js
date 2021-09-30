@@ -2,7 +2,7 @@ const Server = require("socket.io").Server;
 const { customAlphabet } = require("nanoid");
 const { gameLoop, initGame, newPlayer } = require("./game");
 
-const newId = customAlphabet("23456789ABCDEFGHJKLPQSTUVXYZ", 4)
+const newId = customAlphabet("23456789ABCDEFGHJKLPQSTUVXYZ", 4);
 
 const state = {};
 const rooms = {};
@@ -20,12 +20,12 @@ io.on("connection", client => {
         let roomName = newId();
 
         rooms[client.id] = roomName;
-        client.emit("gameCode", roomName)
+        client.emit("gameCode", roomName);
 
         state[roomName] = initGame();
-        Object.assign(state[roomName].players, { [client.id]: newPlayer() })
+        Object.assign(state[roomName].players, { [client.id]: newPlayer() });
         client.join(roomName);
-        client.emit("init", client.id)
+        client.emit("init", client.id);
 
         startInterval(roomName);
     });
@@ -34,7 +34,7 @@ io.on("connection", client => {
     client.on("joinGame", (roomName) => {
         roomName = roomName.toUpperCase();
         const room = io.sockets.adapter.rooms.get(roomName);
-        console.log("Someone joined: ", roomName)
+        console.log("Someone joined: ", roomName);
 
         let numClients = 0;
 
@@ -52,7 +52,7 @@ io.on("connection", client => {
         }
 
         rooms[client.id] = roomName;
-        Object.assign(state[roomName].players, { [client.id]: newPlayer() })
+        Object.assign(state[roomName].players, { [client.id]: newPlayer() });
         client.join(roomName);
         client.emit("gameCode", roomName)
         client.emit("init", client.id);
@@ -108,9 +108,9 @@ function startInterval(roomId) {
         const winner = gameLoop(state[roomId]);
 
         if (!winner) {
-            emitGameState(roomId, state[roomId])
+            emitGameState(roomId, state[roomId]);
         } else {
-            emitGameOver(roomId, winner)
+            emitGameOver(roomId, winner);
             state[roomId] = null;
             clearInterval(intervalId);
         }
@@ -122,8 +122,8 @@ function emitGameState(roomId, state) {
 }
 
 function emitGameOver(roomId, winner) {
-    io.sockets.in(roomId).emit("gameOver", JSON.stringify({ winner }))
+    io.sockets.in(roomId).emit("gameOver", JSON.stringify({ winner }));
 }
 
-console.log("Starting server")
-io.listen(3000)
+console.log("Starting server");
+io.listen(3000);

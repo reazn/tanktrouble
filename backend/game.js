@@ -1,4 +1,3 @@
-
 function initGame() {
     const state = {
         players: {},
@@ -30,35 +29,16 @@ function newPlayer() {
         inv: {
             default: true,
             shotgun: false
-
-
         }
     }
 }
 
-
 function gameLoop(state) {
     if (!state) return;
 
-
-    // console.log(Object.values(state.players))
-
-    // console.log(state.players, "loop")
-    // console.log(state.players, "state.players")
-    // state.players.map(player => {
-    // console.log(player, "mapped player")
-    // console.log(player)
-    // console.log(player, "object entries player")
-    // console.log(Object.values(player)[0], "player!!!")
-
-
-    //TODO make this shit work!!!!, object object 
-    // console.log(state.players, state.players.length, "game loop")
     for (let num = 0; num < Object.keys(state.players).length; num++) {
 
-        let player = Object.values(state.players)[num]
-        // console.log(player, num)
-        // const player = state.players[num]
+        let player = Object.values(state.players)[num];
 
         //Movement
         player.pos.y += player.movement.vel * Math.sin(player.rot);
