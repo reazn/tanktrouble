@@ -22,9 +22,9 @@ npm install
 
 <kbd>S</kbd> - Move backwards
 
-<kbd>A</kbd> - Spin left
+<kbd>A</kbd> - Spin anti-clockwise
 
-<kbd>D</kbd> - Spin right
+<kbd>D</kbd> - Spin clockwise
 
 <kbd>Space</kbd> - Shoot
 
