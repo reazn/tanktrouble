@@ -1,13 +1,13 @@
 function initGame() {
-    const state = {
+    return {
         players: {},
+        bullets: [],
         item: {
-            x: 30,
-            y: 250,
+            x: Math.floor(Math.random() * (800 - 25)),
+            y: Math.floor(Math.random() * (800 - 25)),
         },
-        bullets: [{}]
+        deaths: 0
     }
-    return state;
 }
 
 function newPlayer() {
@@ -25,24 +25,80 @@ function newPlayer() {
             vel: 0,
             rot: 0,
         },
-        color: "#" + Math.floor(Math.random() * 16777215).toString(16),
         inv: {
             default: true,
             shotgun: false
-        }
+        },
+        color: "#000000".replace(/0/g, () => { return (~~(Math.random() * 16)).toString(16) }),
+        ammo: 5,
+        shoot: false,
+        dead: false,
+        wins: 0
     }
+}
+
+function newBullet(player) {
+    return {
+        x: (player.pos.x + 20) + 45 * Math.cos(player.rot),
+        y: (player.pos.y + 24) + 45 * Math.sin(player.rot),
+        xVel: 4,
+        yVel: 4,
+        rot: player.rot,
+    }
+}
+
+function randomItem(state) {
+    item = {
+        x: Math.floor(Math.random() * (800 - 25)),
+        y: Math.floor(Math.random() * (800 - 25)),
+    };
+
+    state.item = item;
 }
 
 function gameLoop(state) {
     if (!state) return;
 
+    let player;
+
+    //Players
     for (let num = 0; num < Object.keys(state.players).length; num++) {
 
-        let player = Object.values(state.players)[num];
+        player = Object.values(state.players)[num];
+
+        //Bullets
+        for (let bul = 0; bul < state.bullets.length; bul++) {
+
+            let bullet = state.bullets[bul]
+
+            bullet.x += bullet.xVel / Object.values(state.players).length * Math.cos(bullet.rot);
+            bullet.y += bullet.yVel / Object.values(state.players).length * Math.sin(bullet.rot);
+
+            //Edge of map collision
+            if (bullet.x <= 0 || bullet.x >= 800) {
+                bullet.xVel = -bullet.xVel;
+            }
+
+            if (bullet.y <= 0 || bullet.y >= 800) {
+                bullet.yVel = -bullet.yVel;
+            }
+
+            //Bullet-player collisions
+            if (player.pos.x + 40 >= bullet.x &&
+                player.pos.x <= bullet.x + 5 &&
+                player.pos.y + 40 >= bullet.y &&
+                player.pos.y <= bullet.y + 5) {
+
+                if (player.dead) continue;
+                state.deaths += 1;
+                player.dead = true;
+                state.bullets.splice([bul], 1)
+            }
+        }
 
         //Movement
-        player.pos.y += player.movement.vel * Math.sin(player.rot);
         player.pos.x += player.movement.vel * Math.cos(player.rot);
+        player.pos.y += player.movement.vel * Math.sin(player.rot);
 
         player.rot += player.movement.rot;
 
@@ -68,25 +124,25 @@ function gameLoop(state) {
             player.pos.x <= state.item.x + 25 &&
             player.pos.y + 40 >= state.item.y &&
             player.pos.y <= state.item.y + 25) {
+            player.ammo = 5;
             randomItem(state);
         }
 
-        //Bullet collisions
-        if (player.shooting) {
-
+        if (!player.dead && Object.keys(state.players).length > 1) {
+            if (state.deaths >= Object.keys(state.players).length - 1) {
+                player.wins++;
+                return Object.keys(state.players)[num];
+            }
         }
 
+        if (player.dead && Object.keys(state.players).length == 1) {
+            return Object.keys(state.players)[num];
+        }
+
+
     };
+
     return false;
 }
 
-function randomItem(state) {
-    item = {
-        x: Math.floor(Math.random() * (800 - 25)),
-        y: Math.floor(Math.random() * (800 - 25)),
-    };
-
-    state.item = item;
-}
-
-module.exports = { initGame, gameLoop, newPlayer };
+module.exports = { initGame, gameLoop, newPlayer, newBullet, randomItem };

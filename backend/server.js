@@ -1,7 +1,8 @@
-const Server = require("socket.io").Server;
+const { Server } = require("socket.io");
 const { customAlphabet } = require("nanoid");
-const { gameLoop, initGame, newPlayer } = require("./game");
+const { gameLoop, initGame, newPlayer, newBullet, randomItem } = require("./game");
 
+//Create random game code
 const newId = customAlphabet("23456789ABCDEFGHJKLPQSTUVXYZ", 4);
 
 const state = {};
@@ -46,12 +47,13 @@ io.on("connection", client => {
             client.emit("unknownGame");
             return;
 
-        } else if (numClients > 9) {
+        } else if (numClients >= 8) {
             client.emit("tooManyPlayers");
             return;
         }
 
         rooms[client.id] = roomName;
+        console.log(state[roomName])
         Object.assign(state[roomName].players, { [client.id]: newPlayer() });
         client.join(roomName);
         client.emit("gameCode", roomName)
@@ -60,22 +62,38 @@ io.on("connection", client => {
 
     //Leave
     client.on("disconnect", () => {
+
         if (state[rooms[client.id]]) {
+
+            // for (var key in state[rooms[client.id]].players) {
+            //     if (state[rooms[client.id]].players.hasOwnProperty(key)) {
+            //         return delete state[rooms[client.id]];
+            //     }
+            // }
+
             delete state[rooms[client.id]].players[client.id];
             delete rooms[client.id];
         }
     });
 
-
     //Keypress
-    client.on("keydown", handleKeyPress);
-    client.on("keyup", handleKeyPress);
+    client.on("keypress", handleKeyPress);
 
     function handleKeyPress(keys) {
 
         if (!state[rooms[client.id]]) return;
 
         let player = state[rooms[client.id]].players[client.id];
+
+        //Undead - for development
+        if (keys.includes("#")) {
+            player.dead = false;
+            if (!state[rooms[client.id]].deaths == 0) {
+                state[rooms[client.id]].deaths--;
+            }
+        }
+
+        if (player.dead) return;
 
         //Move forward and backwards
         if (keys.includes("w")) {
@@ -92,14 +110,32 @@ io.on("connection", client => {
         } else if (keys.includes("a")) {
             player.movement.rot = -3 * Math.PI / 180;
         } else {
-            player.movement.rot = 0 * Math.PI / 180;
+            player.movement.rot = 0;
         }
 
         //Shoot bullet
         if (keys.includes(" ")) {
-            console.log("shoot bullet");
-        } else {
+
+            if (!player.ammo <= 0) {
+
+                if (player.shoot) return;
+
+                player.shoot = true;
+
+                state[rooms[client.id]].bullets.push(newBullet(player));
+                --player.ammo;
+
+                setTimeout(() => {
+                    player.shoot = false;
+                }, 150)
+
+                setTimeout(() => {
+                    if (!state[rooms[client.id]]) return;
+                    state[rooms[client.id]].bullets.shift();
+                }, 5000)
+            }
         }
+
     }
 })
 
@@ -107,22 +143,41 @@ function startInterval(roomId) {
     const intervalId = setInterval(() => {
         const winner = gameLoop(state[roomId]);
 
-        if (!winner) {
-            emitGameState(roomId, state[roomId]);
-        } else {
-            emitGameOver(roomId, winner);
-            state[roomId] = null;
+        emitGameState(roomId, state[roomId]);
+
+        if (winner) {
             clearInterval(intervalId);
+            resetGame(state[roomId]);
+
+            setTimeout(() => {
+                startInterval(roomId);
+            }, 1000)
         }
     }, 1000 / 60)
 }
 
-function emitGameState(roomId, state) {
-    io.sockets.in(roomId).emit("gameState", JSON.stringify(state));
+function resetGame(roomId) {
+
+    //Game
+    roomId.bullets = [];
+    randomItem(roomId);
+    roomId.deaths = 0;
+
+    //Players
+    for (let num = 0; num < Object.keys(roomId.players).length; num++) {
+        player = Object.values(roomId.players)[num];
+        player.dead = false;
+        player.pos = {
+            x: Math.floor(Math.random() * (800 - 45)),
+            y: Math.floor(Math.random() * (800 - 45))
+        }
+        player.rot = Math.floor(Math.random() * 360);
+        player.ammo = 5;
+    }
 }
 
-function emitGameOver(roomId, winner) {
-    io.sockets.in(roomId).emit("gameOver", JSON.stringify({ winner }));
+function emitGameState(roomId, state) {
+    io.sockets.in(roomId).emit("gameState", JSON.stringify(state));
 }
 
 console.log("Starting server");
