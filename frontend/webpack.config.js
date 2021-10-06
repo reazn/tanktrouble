@@ -2,10 +2,21 @@ const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
+    mode: "development",
     target: "web",
     entry: "./src/game.js",
     output: {
         filename: "bundle.js",
+    },
+    module: {
+        rules: [{
+            test: /\.s[ac]ss$/i,
+            use: [
+                "style-loader",
+                "css-loader",
+                "sass-loader"
+            ]
+        }]
     },
     plugins: [
         new NodePolyfillPlugin(),
@@ -20,6 +31,5 @@ module.exports = {
     },
     devServer: {
         port: 8080,
-    },
-    mode: "development"
+    }
 };

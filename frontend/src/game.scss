@@ -1,0 +1,150 @@
+
+body {
+    padding: 0;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    font-family: " Roboto", sans-serif;
+    background: linear-gradient(90deg, rgba(208, 36, 37, 0.3) 0%, rgba(85, 98, 233, 0.3) 100%);
+}
+
+.button {
+    background: #5562E9;
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    border: 0;
+    cursor: pointer;
+    height: 45px;
+    font-size: 22px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.cover {
+    width: 100%;
+    height: 100%;
+
+    .container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: column;
+
+        .game-code {
+            padding: 0;
+            color: black;
+            height: 35px;
+            background: transparent;
+            border: 2px solid #5562E9;
+            border-radius: 5px;
+            font-size: 18px;
+            text-align: center;
+            outline: none;
+            margin-bottom: 5px;
+            margin-top: 10px;
+            
+            &::placeholder {
+                padding-left: 10px;
+                text-align: left;
+                color: #5F5F5F;
+                font-size: 16px;
+            }
+        }
+    }
+}
+
+.game {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    .top-menu {
+        margin-top: 20px;
+        margin-bottom: 20px;
+
+        .close {
+            background: #e33327;
+        }
+    
+        .code {
+            user-select: none;
+            letter-spacing: 2px;
+        }
+
+        .tooltip {
+            visibility: hidden;
+            background: rgb(10, 10, 10, 0.5);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+        }
+    }
+
+    .main {
+        display: flex;
+
+        .players {
+            width: 200px;
+            margin-right: 10px;
+            background: rgba(255, 255, 255, 0.2);
+
+            .player {
+                width: 100%;
+                background: #fff;
+                border-bottom: 1px solid rgb(204, 204, 204);
+                margin-bottom: 10px;
+                display: flex;
+                justify-content: space-between;
+                border-radius: 5px;
+
+                .color {
+                    width: 50px;
+                    height: 50px;
+                    color: white;
+                    font-size: 30px;
+                    font-weight: 600;
+                    text-align: center;
+                    display: grid;
+                    place-items: center;
+                    border-top-left-radius: 5px;
+                    border-bottom-left-radius: 5px;
+                }
+
+                .wins {
+                    display: flex;
+                    align-items: center;
+                    text-align: center;
+                    margin-left: auto;
+                    margin-right: 10px;
+                    font-weight: 600;
+                    font-size: 20px;
+                }
+
+                .ammo {
+                    display: flex;
+                    align-items: center;
+
+                    .ammo-count {
+                        width: 10px;
+                        height: 10px;
+                        background: black;
+                        border-radius: 50%;
+                        margin: 5px;
+                    }
+                }
+            }
+        }
+
+        .canvas {
+            border-radius: 5px;
+        }
+    }
+}
+
+
+
+
