@@ -1,6 +1,5 @@
 const io = require("socket.io-client");
 require("./game.scss");
-
 // const socket = io("https://reazn.me"); //Prod
 const socket = io("http://localhost:3000"); //Dev
 
@@ -12,7 +11,7 @@ const joinGameButton = document.getElementById("joinGame"); //Join game
 const gameCodeText = document.getElementById("gameCodeText"); //Game code
 const tooltip = document.getElementById("tooltip"); //Game code
 
-let canvas, ctx, clientId;
+let canvas, ctx;
 
 gameCodeText.addEventListener("click", () => {
     navigator.clipboard.writeText(gameCodeText.innerText);
@@ -148,9 +147,9 @@ function drawBullet(bulletState) {
     ctx.fill();
 }
 
-socket.on("init", (id) => {
-    clientId = id;
-});
+// socket.on("init", (id) => {
+//     clientId = id;
+// });
 
 socket.on("gameState", (gameState) => {
     gameState = JSON.parse(gameState);
@@ -172,7 +171,6 @@ socket.on("tooManyPlayers", () => {
 });
 
 function reset() {
-    clientId = null;
     gameCodeInput.value = "";
     gameCodeInput.innerText = "";
     coverScreen.style.display = "block"; //show game screen

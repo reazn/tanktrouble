@@ -35,7 +35,6 @@ io.on("connection", client => {
     client.on("joinGame", (roomName) => {
         roomName = roomName.toUpperCase();
         const room = io.sockets.adapter.rooms.get(roomName);
-        console.log("Someone joined: ", roomName);
 
         let numClients = 0;
 
@@ -53,7 +52,6 @@ io.on("connection", client => {
         }
 
         rooms[client.id] = roomName;
-        console.log(state[roomName])
         Object.assign(state[roomName].players, { [client.id]: newPlayer() });
         client.join(roomName);
         client.emit("gameCode", roomName)
@@ -123,16 +121,12 @@ io.on("connection", client => {
                 player.shoot = true;
 
                 state[rooms[client.id]].bullets.push(newBullet(player));
-                --player.ammo;
+                player.ammo--;
 
                 setTimeout(() => {
                     player.shoot = false;
                 }, 150)
 
-                setTimeout(() => {
-                    if (!state[rooms[client.id]]) return;
-                    state[rooms[client.id]].bullets.shift();
-                }, 5000)
             }
         }
 
