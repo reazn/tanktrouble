@@ -44,6 +44,7 @@ function newBullet(player) {
         xVel: 4,
         yVel: 4,
         rot: player.rot,
+        bounces: 0
     }
 }
 
@@ -77,10 +78,12 @@ function gameLoop(state) {
             //Edge of map collision
             if (bullet.x <= 0 || bullet.x >= 800) {
                 bullet.xVel = -bullet.xVel;
+                bullet.bounces++;
             }
 
             if (bullet.y <= 0 || bullet.y >= 800) {
                 bullet.yVel = -bullet.yVel;
+                bullet.bounces++;
             }
 
             //Bullet-player collisions
@@ -94,6 +97,8 @@ function gameLoop(state) {
                 player.dead = true;
                 state.bullets.splice([bul], 1)
             }
+
+            if (bullet.bounces == 3) state.bullets.splice([bul], 1);
         }
 
         //Movement
