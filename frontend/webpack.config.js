@@ -1,5 +1,5 @@
-const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
     mode: "development",
@@ -16,6 +16,10 @@ module.exports = {
                 "css-loader",
                 "sass-loader"
             ]
+        }, {
+            test: /\.m?js$/,
+            exclude: /node_modules/,
+            loader: "babel-loader",
         }]
     },
     plugins: [
