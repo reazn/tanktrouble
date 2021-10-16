@@ -1,5 +1,6 @@
-const io = require("socket.io-client");
-require("./game.scss");
+import io from "socket.io-client";
+import "./game.scss";
+
 // const socket = io("https://reazn.me"); //Prod
 const socket = io("http://localhost:3000"); //Dev
 
@@ -13,6 +14,7 @@ const tooltip = document.getElementById("tooltip"); //Game code
 
 let canvas, ctx;
 
+//Copy code to clipboard
 gameCodeText.addEventListener("click", () => {
     navigator.clipboard.writeText(gameCodeText.innerText);
     tooltip.style.visibility = "visible";
@@ -21,11 +23,13 @@ gameCodeText.addEventListener("click", () => {
     }, 1000)
 })
 
+//Create Game button
 newGameButton.addEventListener("click", () => {
     socket.emit("newGame");
     init()
 });
 
+//Join Game button
 joinGameButton.addEventListener("click", () => {
     const gameCode = gameCodeInput.value;
     socket.emit("joinGame", gameCode);
@@ -66,15 +70,13 @@ let tag = document.createElement("div")
 
 function draw(state) {
     tag.replaceChildren()
+
     //Canvas
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     //Item
-    const item = state.item;
-    ctx.fillStyle = "#8d41fe";
-    ctx.fillRect(item.x, item.y, 25, 25);
-
+    item(state.item)
 
     //Player
     for (let num = 0; num < Object.keys(state.players).length; num++) {
@@ -91,6 +93,29 @@ function draw(state) {
     for (let bul = 0; bul < state.bullets.length; bul++) {
         drawBullet(state.bullets[bul]);
     }
+}
+
+const itemWidth = 25;
+const itemHeight = 25;
+
+function item(item) {
+    ctx.save();
+    ctx.stokeStyle = "black"
+    ctx.strokeRect(item.x, item.y, itemWidth, itemHeight);
+
+    ctx.fillStyle = "black";
+    ctx.beginPath();
+    ctx.arc(item.x + itemWidth / 2, item.y + itemHeight / 3.4, itemWidth / 5, 0, 2 * Math.PI, false);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(item.x + itemWidth / 3.4, item.y + itemHeight / 1.4, itemWidth / 5, 0, 2 * Math.PI, false);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(item.x + itemWidth / 1.4, item.y + itemHeight / 1.4, itemWidth / 5, 0, 2 * Math.PI, false);
+    ctx.fill();
+    ctx.restore();
 }
 
 function playerInfo(player) {
@@ -126,12 +151,12 @@ const tankLength = tankWidth * 1.2;
 const gunWidth = tankWidth / 4;
 const gunLength = tankLength / 1.8;
 
-function drawPlayer(playerState) {
-    ctx.fillStyle = playerState.color;
+function drawPlayer(player) {
+    ctx.fillStyle = player.color;
     ctx.save();
     ctx.beginPath();
-    ctx.translate(playerState.pos.x + tankLength / 2, playerState.pos.y + tankWidth / 2);
-    ctx.rotate(playerState.rot);
+    ctx.translate(player.pos.x + tankLength / 2, player.pos.y + tankWidth / 2);
+    ctx.rotate(player.rot);
     ctx.fillRect(-tankLength / 2, -tankWidth / 2, tankLength, tankWidth);
     ctx.rect(-tankLength * -0.1, -gunWidth / 2, gunLength, gunWidth);
     ctx.arc(0, 0, 13, 0, 2 * Math.PI, false);
@@ -140,16 +165,13 @@ function drawPlayer(playerState) {
     ctx.restore();
 }
 
-function drawBullet(bulletState) {
+function drawBullet(bullet) {
     ctx.beginPath();
-    ctx.arc(bulletState.x, bulletState.y, 5, 0, 2 * Math.PI, false);
+    ctx.arc(bullet.x, bullet.y, 5, 0, 2 * Math.PI, false);
+
     ctx.fillStyle = "black";
     ctx.fill();
 }
-
-// socket.on("init", (id) => {
-//     clientId = id;
-// });
 
 socket.on("gameState", (gameState) => {
     gameState = JSON.parse(gameState);
