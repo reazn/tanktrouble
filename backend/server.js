@@ -1,6 +1,6 @@
-const { Server } = require("socket.io");
-const { customAlphabet } = require("nanoid");
-const { gameLoop, initGame, newPlayer, newBullet, randomItem } = require("./game");
+import { Server } from "socket.io";
+import { customAlphabet } from "nanoid";
+import { gameLoop, initGame, newPlayer, newBullet, randomItem } from "./game.js";
 
 //Create random game code
 const newId = customAlphabet("23456789ABCDEFGHJKLPQSTUVXYZ", 4);
@@ -159,7 +159,7 @@ function resetGame(roomId) {
 
     //Players
     for (let num = 0; num < Object.keys(roomId.players).length; num++) {
-        player = Object.values(roomId.players)[num];
+        let player = Object.values(roomId.players)[num];
         player.dead = false;
         player.pos = {
             x: Math.floor(Math.random() * (800 - 45)),

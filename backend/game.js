@@ -1,4 +1,4 @@
-function initGame() {
+export function initGame() {
     return {
         players: {},
         bullets: [],
@@ -10,7 +10,7 @@ function initGame() {
     }
 }
 
-function newPlayer() {
+export function newPlayer() {
     return {
         pos: {
             x: Math.floor(Math.random() * (800 - 45)),
@@ -25,10 +25,7 @@ function newPlayer() {
             vel: 0,
             rot: 0,
         },
-        inv: {
-            default: true,
-            shotgun: false
-        },
+        weapon: "normal",
         color: "#000000".replace(/0/g, () => { return (~~(Math.random() * 16)).toString(16) }),
         ammo: 5,
         shoot: false,
@@ -37,19 +34,21 @@ function newPlayer() {
     }
 }
 
-function newBullet(player) {
+export function newBullet(player) {
     return {
         x: (player.pos.x + 20) + 45 * Math.cos(player.rot),
         y: (player.pos.y + 24) + 45 * Math.sin(player.rot),
-        xVel: 4,
-        yVel: 4,
         rot: player.rot,
-        bounces: 0
+        xVel: player.weapon == "laser" ? 10 : 4,
+        yVel: player.weapon == "laser" ? 10 : 4,
+        bounces: 0,
+        weapon: player.weapon
     }
 }
 
-function randomItem(state) {
-    item = {
+
+export function randomItem(state) {
+    let item = {
         x: Math.floor(Math.random() * (800 - 25)),
         y: Math.floor(Math.random() * (800 - 25)),
     };
@@ -57,7 +56,7 @@ function randomItem(state) {
     state.item = item;
 }
 
-function gameLoop(state) {
+export function gameLoop(state) {
     if (!state) return;
 
     let player;
@@ -144,10 +143,7 @@ function gameLoop(state) {
             return Object.keys(state.players)[num];
         }
 
-
     };
 
     return false;
 }
-
-module.exports = { initGame, gameLoop, newPlayer, newBullet, randomItem };
