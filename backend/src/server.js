@@ -15,7 +15,7 @@ const io = new Server({
 });
 
 io.on("connection", client => {
-
+    console.log("something connected")
     //Create game
     client.on("newGame", () => {
         let roomName = newId();

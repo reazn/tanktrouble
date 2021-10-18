@@ -2,11 +2,10 @@
   "name": "backend",
   "version": "0.0.2",
   "description": "",
-  "type": "module",
-  "main": "index.js",
+  "main": "./src/server.js",
   "scripts": {
-    "start": "node server.js",
-    "watch": "npx nodemon server.js"
+    "watch": "webpack --watch",
+    "build": "webpack"
   },
   "keywords": [],
   "author": "REAZN",
@@ -14,5 +13,13 @@
   "dependencies": {
     "nanoid": "^3.1.28",
     "socket.io": "^4.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.15.8",
+    "babel-loader": "^8.2.2",
+    "node-polyfill-webpack-plugin": "^1.1.4",
+    "webpack": "^5.58.2",
+    "webpack-cli": "^4.9.0",
+    "webpack-node-externals": "^3.0.0"
   }
 }
