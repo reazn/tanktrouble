@@ -1,12 +1,11 @@
-const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-    mode: "development",
+    mode: "production",
     target: "web",
     entry: "./src/game.js",
     output: {
-        filename: "bundle.js",
+        filename: "client_bundle.js",
     },
     module: {
         rules: [{
@@ -23,7 +22,6 @@ module.exports = {
         }]
     },
     plugins: [
-        new NodePolyfillPlugin(),
         new HtmlWebpackPlugin({
             template: "./src/game.html"
         })

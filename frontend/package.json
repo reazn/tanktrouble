@@ -2,10 +2,10 @@
   "name": "frontend",
   "version": "0.0.2",
   "description": "",
-  "main": "game.js",
+  "main": "./src/game.js",
   "scripts": {
-    "watch": "webpack-dev-server ./src/game.js",
-    "build": "webpack ./src/game.js"
+    "watch": "webpack-dev-server",
+    "build": "webpack"
   },
   "keywords": [],
   "author": "REAZN",
@@ -15,7 +15,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
-    "@babel/preset-env": "^7.15.8",
     "babel-loader": "^8.2.2",
     "css-loader": "^6.3.0",
     "html-webpack-plugin": "^5.3.2",
