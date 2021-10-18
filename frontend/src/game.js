@@ -47,7 +47,9 @@ function init() {
 
     let keyMap = []
 
+    //Send keypress to server
     document.addEventListener("keydown", (event) => {
+        if (event.key == " " && event.target == document.body) event.preventDefault();
         if (event.repeat) return;
         if (!keyMap.includes(event.key)) {
             keyMap.push(event.key.toLowerCase());
