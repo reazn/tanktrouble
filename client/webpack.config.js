@@ -23,7 +23,8 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: "./src/game.html"
+            template: "./src/game.html",
+            favicon: "./src/public/favicon.png"
         })
     ],
     resolve: {
