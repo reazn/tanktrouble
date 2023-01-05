@@ -1,7 +1,7 @@
 import io from "socket.io-client";
 import "./game.scss";
 
-const socket = io("https://reazn.dev"); // Prod
+const socket = io("https://reazn.dev", { path: "/ttsocket"}); // Prod
 // const socket = io("http://localhost:3000"); // Dev
 
 const coverScreen = document.getElementById("coverScreen"); // Join options

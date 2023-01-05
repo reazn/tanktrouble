@@ -175,4 +175,4 @@ function emitGameState(roomId, state) {
 }
 
 console.log("Starting server");
-io.listen(3000);
+io.listen(6968);
