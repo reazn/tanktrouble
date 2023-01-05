@@ -1,8 +1,8 @@
 import io from "socket.io-client";
 import "./game.scss";
 
-// const socket = io("https://reazn.me"); //Prod
-const socket = io("http://localhost:3000"); //Dev
+const socket = io("https://reazn.me"); //Prod
+// const socket = io("http://localhost:3000"); //Dev
 
 const coverScreen = document.getElementById("coverScreen"); //Join options
 const gameScreen = document.getElementById("gameScreen"); //Game screen
