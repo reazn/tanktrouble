@@ -1,20 +1,20 @@
 import io from "socket.io-client";
 import "./game.scss";
 
-const socket = io("https://reazn.me"); //Prod
-// const socket = io("http://localhost:3000"); //Dev
+const socket = io("https://reazn.dev"); // Prod
+// const socket = io("http://localhost:3000"); // Dev
 
-const coverScreen = document.getElementById("coverScreen"); //Join options
-const gameScreen = document.getElementById("gameScreen"); //Game screen
-const newGameButton = document.getElementById("newGame"); //Create game
-const gameCodeInput = document.getElementById("gameCode"); //Game Code input
-const joinGameButton = document.getElementById("joinGame"); //Join game
-const gameCodeText = document.getElementById("gameCodeText"); //Game code
-const tooltip = document.getElementById("tooltip"); //Game code
+const coverScreen = document.getElementById("coverScreen"); // Join options
+const gameScreen = document.getElementById("gameScreen"); // Game screen
+const newGameButton = document.getElementById("newGame"); // Create game
+const gameCodeInput = document.getElementById("gameCode"); // Game Code input
+const joinGameButton = document.getElementById("joinGame"); // Join game
+const gameCodeText = document.getElementById("gameCodeText"); // Game code
+const tooltip = document.getElementById("tooltip"); // Game code
 
 let canvas, ctx;
 
-//Copy code to clipboard
+// Copy code to clipboard
 gameCodeText.addEventListener("click", () => {
     navigator.clipboard.writeText(gameCodeText.innerText);
     tooltip.style.visibility = "visible";
@@ -23,13 +23,13 @@ gameCodeText.addEventListener("click", () => {
     }, 1000)
 })
 
-//Create Game button
+// Create Game button
 newGameButton.addEventListener("click", () => {
     socket.emit("newGame");
     init()
 });
 
-//Join Game button
+// Join Game button
 joinGameButton.addEventListener("click", () => {
     const gameCode = gameCodeInput.value;
     socket.emit("joinGame", gameCode);
@@ -37,8 +37,8 @@ joinGameButton.addEventListener("click", () => {
 });
 
 function init() {
-    coverScreen.style.display = "none"; //hide join options screen
-    gameScreen.style.display = "block"; //show game screen
+    coverScreen.style.display = "none"; // hide join options screen
+    gameScreen.style.display = "block"; // show game screen
 
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext("2d");
@@ -47,7 +47,7 @@ function init() {
 
     let keyMap = []
 
-    //Send keypress to server
+    // Send keypress to server
     document.addEventListener("keydown", (event) => {
         if (event.key == " " && event.target == document.body) event.preventDefault();
         if (event.repeat) return;
@@ -73,14 +73,14 @@ let tag = document.createElement("div")
 function draw(state) {
     tag.replaceChildren()
 
-    //Canvas
+    // Canvas
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    //Item
+    // Item
     item(state.item)
 
-    //Player
+    // Player
     for (let num = 0; num < Object.keys(state.players).length; num++) {
         let player = Object.values(state.players)[num];
 
@@ -91,7 +91,7 @@ function draw(state) {
         }
     }
 
-    //Bullets
+    // Bullets
     for (let bul = 0; bul < state.bullets.length; bul++) {
         drawBullet(state.bullets[bul]);
     }
@@ -197,7 +197,7 @@ socket.on("tooManyPlayers", () => {
 function reset() {
     gameCodeInput.value = "";
     gameCodeInput.innerText = "";
-    coverScreen.style.display = "block"; //show game screen
-    gameScreen.style.display = "none"; //hide join options screen
+    coverScreen.style.display = "block"; // show game screen
+    gameScreen.style.display = "none"; // hide join options screen
 
 }

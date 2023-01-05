@@ -2,7 +2,7 @@ import { Server } from "socket.io";
 import { customAlphabet } from "nanoid";
 import { gameLoop, initGame, newPlayer, newBullet, randomItem } from "./game.js";
 
-//Create random game code
+// Create random game code
 const newId = customAlphabet("23456789ABCDEFGHJKLPQSTUVXYZ", 4);
 
 const state = {};
@@ -16,7 +16,7 @@ const io = new Server({
 
 io.on("connection", client => {
     console.log("something connected")
-    //Create game
+    // Create game
     client.on("newGame", () => {
         let roomName = newId();
 
@@ -31,7 +31,7 @@ io.on("connection", client => {
         startInterval(roomName);
     });
 
-    //Join
+    // Join
     client.on("joinGame", (roomName) => {
         roomName = roomName.toUpperCase();
         const room = io.sockets.adapter.rooms.get(roomName);
@@ -58,7 +58,7 @@ io.on("connection", client => {
         client.emit("init", client.id);
     });
 
-    //Leave
+    // Leave
     client.on("disconnect", () => {
 
         if (state[rooms[client.id]]) {
@@ -74,7 +74,7 @@ io.on("connection", client => {
         }
     });
 
-    //Keypress
+    // Keypress
     client.on("keypress", handleKeyPress);
 
     function handleKeyPress(keys) {
@@ -93,7 +93,7 @@ io.on("connection", client => {
 
         if (player.dead) return;
 
-        //Move forward and backwards
+        // Move forward and backwards
         if (keys.includes("w")) {
             player.movement.vel = 2;
         } else if (keys.includes("s")) {
@@ -102,7 +102,7 @@ io.on("connection", client => {
             player.movement.vel = 0;
         }
 
-        //Rotate tank
+        // Rotate tank
         if (keys.includes("d")) {
             player.movement.rot = 3 * Math.PI / 180;
         } else if (keys.includes("a")) {
@@ -111,7 +111,7 @@ io.on("connection", client => {
             player.movement.rot = 0;
         }
 
-        //Shoot bullet
+        // Shoot bullet
         if (keys.includes(" ")) {
 
             if (!player.ammo <= 0) {
@@ -152,12 +152,12 @@ function startInterval(roomId) {
 
 function resetGame(roomId) {
 
-    //Game
+    // Game
     roomId.bullets = [];
     randomItem(roomId);
     roomId.deaths = 0;
 
-    //Players
+    // Players
     for (let num = 0; num < Object.keys(roomId.players).length; num++) {
         let player = Object.values(roomId.players)[num];
         player.dead = false;

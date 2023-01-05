@@ -61,12 +61,12 @@ export function gameLoop(state) {
 
     let player;
 
-    //Players
+    // Players
     for (let num = 0; num < Object.keys(state.players).length; num++) {
 
         player = Object.values(state.players)[num];
 
-        //Bullets
+        // Bullets
         for (let bul = 0; bul < state.bullets.length; bul++) {
 
             let bullet = state.bullets[bul]
@@ -74,7 +74,7 @@ export function gameLoop(state) {
             bullet.x += bullet.xVel / Object.values(state.players).length * Math.cos(bullet.rot);
             bullet.y += bullet.yVel / Object.values(state.players).length * Math.sin(bullet.rot);
 
-            //Edge of map collision
+            // Edge of map collision
             if (bullet.x <= 0 || bullet.x >= 800) {
                 bullet.xVel = -bullet.xVel;
                 bullet.bounces++;
@@ -85,7 +85,7 @@ export function gameLoop(state) {
                 bullet.bounces++;
             }
 
-            //Bullet-player collisions
+            // Bullet-player collisions
             if (player.pos.x + 40 >= bullet.x &&
                 player.pos.x <= bullet.x + 5 &&
                 player.pos.y + 40 >= bullet.y &&
@@ -100,13 +100,13 @@ export function gameLoop(state) {
             if (bullet.bounces == 3) state.bullets.splice([bul], 1);
         }
 
-        //Movement
+        // Movement
         player.pos.x += player.movement.vel * Math.cos(player.rot);
         player.pos.y += player.movement.vel * Math.sin(player.rot);
 
         player.rot += player.movement.rot;
 
-        //Edge of map collision
+        // Edge of map collision
         if (player.pos.x < 0) {
             player.pos.x = 0;
         }
@@ -123,7 +123,7 @@ export function gameLoop(state) {
             player.pos.y = 800 - 45;
         }
 
-        //Item pickup collision
+        // Item pickup collision
         if (player.pos.x + 40 >= state.item.x &&
             player.pos.x <= state.item.x + 25 &&
             player.pos.y + 40 >= state.item.y &&
