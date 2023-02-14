@@ -3,7 +3,7 @@ Tank Trouble is a shooter game where multiple people play as tanks and compete. 
 
 ## Demo
 
-[Live Demo](https://reazn.me/tanktrouble/)
+[Live Demo](https://reazn.dev/tanktrouble/)
 
 ## Installation
 
